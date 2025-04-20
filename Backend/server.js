@@ -1,7 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/routes');
+const tripRoutes = require('./routes/tripRoutes');
+
 
 dotenv.config();
 
@@ -10,8 +11,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 connectDB();
-
-app.use('/api/users', userRoutes);
+app.use('/api/trips', tripRoutes);
 
 app.get('/', (req, res) => {
   res.send('🌍 TravelEase backend server is running!');
