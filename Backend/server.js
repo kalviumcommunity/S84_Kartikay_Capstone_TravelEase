@@ -19,7 +19,7 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(errorHandler);
 
-connectDB();
+connectDB();//Mongodb connected
 
 app.use('/api/trips', tripRoutes);
 app.use('/api/destinations', destinationRoutes);
