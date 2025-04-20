@@ -7,6 +7,7 @@ const destinationRoutes = require('./routes/destinationRoutes');
 const hotelRoutes = require('./routes/hotelRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const cityRoutes = require('./routes/cityRoutes');
+const reviewRoutes = require('./routes/reviewRoutes'); 
 
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/api/destinations', destinationRoutes);
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/cities', cityRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
   res.send('🌍 TravelEase backend server is running!');
