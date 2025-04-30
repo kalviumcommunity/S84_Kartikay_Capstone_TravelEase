@@ -109,3 +109,5 @@ TravelEase is your smart companion for discovering and planning unforgettable tr
 
 # Design link :-
 Low Fid prototype link :- https://www.figma.com/proto/foUrD6IzTJimjzygvsBJld/TravelEase-Capstone-low-fid?node-id=0-1&t=adgMviUn4DTYCYFH-1
+
+---
