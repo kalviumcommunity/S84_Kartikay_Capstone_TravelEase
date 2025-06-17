@@ -1,9 +1,12 @@
 ﻿# S84_Kartikay_Capstone_TravelEase
 
-### 📡 Backend Deployment
+### 📡 Deployment
 
-The backend server for this project is live and can be accessed here:  
-👉 [https://travelease-5z19.onrender.com](https://travelease-5z19.onrender.com)
+- 🔗 **Frontend Live Site:**  
+  👉 [https://travelease-kartikay.netlify.app](https://travelease-kartikay.netlify.app)  
+
+- 🔗 **Backend Server:**  
+  👉 [https://travelease-5z19.onrender.com](https://travelease-5z19.onrender.com)  
 
 This deployed API handles authentication, user management, and connects to a MongoDB database.
 
