@@ -131,17 +131,17 @@ const LandingPage = () => {
         <div className="testimonial-grid">
           {[
             { 
-              name: 'Priya', 
+              name: 'Emily', 
               text: 'TravelEase made my honeymoon trip unforgettable!',
               image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg'
             },
             { 
-              name: 'Ravi', 
+              name: 'John Doe', 
               text: 'The AI trip builder saved me so much time!',
               image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
             },
             { 
-              name: 'Aisha', 
+              name: 'Sarah', 
               text: 'I planned everything in one place – it was so easy!',
               image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg'
             },
