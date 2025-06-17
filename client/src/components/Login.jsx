@@ -62,7 +62,7 @@ function Login() {
                 resetForm();
             
                 setTimeout(() => {
-                    navigate('/Dashboard');
+                    navigate('/dashboard');
                 }, 1500);
             } else {
                 setMessage(data.error || '❌ Login failed. Please check your credentials.');
