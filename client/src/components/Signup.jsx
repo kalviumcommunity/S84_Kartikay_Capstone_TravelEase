@@ -44,7 +44,7 @@ function Signup() {
         }
     
         try {
-            const response = await fetch('http://localhost:3000/api/users/signup', {
+            const response = await fetch('https://travelease-5z19.onrender.com/api/users/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
