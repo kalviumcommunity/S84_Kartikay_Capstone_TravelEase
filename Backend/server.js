@@ -9,6 +9,7 @@ const eventRoutes = require('./routes/eventRoutes');
 const cityRoutes = require('./routes/cityRoutes');
 const reviewRoutes = require('./routes/reviewRoutes'); 
 const userRoutes = require('./routes/userRoutes');
+const cors = require('cors');
 
 
 dotenv.config();
@@ -18,6 +19,11 @@ const app = express();
 const PORT = process.env.PORT;
 app.use(express.json());
 app.use(errorHandler);
+app.use(cors({
+  origin: ['http://localhost:5173','https://kartikay-travelease.netlify.app/'], // Allow requests from your frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true // Enable cookies or authentication headers if needed
+}));
 
 connectDB();//Mongodb connected
 
