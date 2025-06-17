@@ -5,6 +5,10 @@ import '../styles/Dashboard.css';
 
 const Dashboard = () => {
     const { user } = useAuth();
+
+    if (!user) {
+        return <div>Please log in to access the dashboard.</div>;
+    }
     const [activeTab, setActiveTab] = useState('upcoming');
     const [currentTime, setCurrentTime] = useState('');
     const [currentDate, setCurrentDate] = useState(new Date());
