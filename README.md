@@ -3,10 +3,10 @@
 ### 📡 Deployment
 
 - 🔗 **Frontend Live Site:**  
-  👉 [https://travelease-kartikay.netlify.app](https://travelease-kartikay.netlify.app)  
+  👉 [Frontend](https://kartikay-travelease.netlify.app/) 
 
 - 🔗 **Backend Server:**  
-  👉 [https://travelease-5z19.onrender.com](https://travelease-5z19.onrender.com)  
+  👉 [Backend](https://travelease-5z19.onrender.com)  
 
 This deployed API handles authentication, user management, and connects to a MongoDB database.
 
