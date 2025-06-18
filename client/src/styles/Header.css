@@ -31,9 +31,6 @@
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    padding: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
@@ -41,11 +38,6 @@
     height: 50px;
     width: auto;
     transition: transform 0.3s ease;
-    filter: brightness(1.1) contrast(1.1);
-}
-
-.logo:hover {
-    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .logo:hover img {
