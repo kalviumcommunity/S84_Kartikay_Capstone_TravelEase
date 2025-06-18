@@ -54,6 +54,17 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/destinations/:cityName"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <Header />
+                      <Home />
+                    </>
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </div>
         </Router>
