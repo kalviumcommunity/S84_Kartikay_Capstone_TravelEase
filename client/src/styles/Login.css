@@ -54,6 +54,11 @@
     -webkit-text-fill-color: transparent;
 }
 
+.login-header p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
 .login-form {
     display: flex;
     flex-direction: column;
@@ -64,6 +69,14 @@
     font-weight: 500;
     color: var(--text-dark);
     margin-bottom: 0.5rem;
+    text-align: left !important;
+    display: block;
+    width: 100%;
+}
+
+.login-form .form-group {
+    text-align: left;
+    width: 100%;
 }
 
 .login-form .form-control {
@@ -77,6 +90,10 @@
 .login-form .form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.login-form .form-control.is-invalid {
+    border-color: #dc3545;
 }
 
 .login-alert {
@@ -110,21 +127,27 @@
     cursor: not-allowed;
 }
 
-.signup-link {
+.login-footer {
     text-align: center;
     margin-top: 1.5rem;
     color: var(--text-light);
 }
 
-.signup-link a {
+.login-footer a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
 }
 
-.signup-link a:hover {
+.login-footer a:hover {
     color: var(--primary-dark);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-light);
 }
 
 @keyframes fadeIn {
@@ -156,6 +179,10 @@
 
     .login-header h2 {
         font-size: 1.75rem;
+    }
+
+    .login-header p {
+        font-size: 1rem;
     }
 
     .login-form .form-control {

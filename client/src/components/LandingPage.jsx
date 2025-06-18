@@ -211,6 +211,21 @@ const LandingPage = () => {
               src: 'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg',
               alt: 'Stunning waterfall in nature',
               category: 'Waterfall'
+            },
+            {
+              src: 'https://images.pexels.com/photos/2387871/pexels-photo-2387871.jpeg',
+              alt: 'Ancient historical ruins',
+              category: 'Historical'
+            },
+            {
+              src: 'https://images.pexels.com/photos/2113566/pexels-photo-2113566.jpeg',
+              alt: 'Snowy winter landscape',
+              category: 'Winter'
+            },
+            {
+              src: 'https://images.pexels.com/photos/18041018/pexels-photo-18041018.jpeg',
+              alt: 'Vibrant cultural festival',
+              category: 'Cultural'
             }
           ].map((image, i) => (
             <div key={i} className="gallery-item">

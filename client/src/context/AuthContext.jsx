@@ -1,28 +1,34 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  let initialUser = null;
-  let initialToken = '';
-
-  try {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    initialUser = storedUser ? JSON.parse(storedUser) : null;
-    initialToken = storedToken || '';
-  } catch (error) {
-    console.error('Error parsing auth data from localStorage:', error);
-    initialUser = null;
-    initialToken = '';
-  }
-
-  const [user, setUser] = useState(initialUser);
-  const [token, setToken] = useState(initialToken);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!initialUser);
-
-  const login = (data) => {
+  const [user, setUser] = useState(() => {
     try {
+      const storedUser = localStorage.getItem('user');
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch (error) {
+      console.error('Error parsing user data from localStorage:', error);
+      return null;
+    }
+  });
+
+  const [token, setToken] = useState(() => {
+    try {
+      return localStorage.getItem('token') || '';
+    } catch (error) {
+      console.error('Error getting token from localStorage:', error);
+      return '';
+    }
+  });
+
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!user);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const login = useCallback(async (data) => {
+    try {
+      setIsLoading(true);
       if (!data || !data.token || !data.user) {
         throw new Error('Invalid login response data');
       }
@@ -47,24 +53,30 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Login error:', error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     try {
+      setIsLoading(true);
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       setUser(null);
       setToken('');
       setIsLoggedIn(false);
+      window.location.href = '/'; // Force navigation to landing page
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const isAuthenticated = () => {
+  const isAuthenticated = useCallback(() => {
     return !!token && !!user;
-  };
+  }, [token, user]);
 
   return (
     <AuthContext.Provider 
@@ -72,6 +84,7 @@ export const AuthProvider = ({ children }) => {
         user, 
         token, 
         isLoggedIn, 
+        isLoading,
         login, 
         logout,
         isAuthenticated
