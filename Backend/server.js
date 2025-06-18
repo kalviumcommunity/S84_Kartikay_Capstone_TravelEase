@@ -20,7 +20,7 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(errorHandler);
 app.use(cors({
-  origin: ['http://localhost:5173','https://kartikay-travelease.netlify.app/'], // Allow requests from your frontend
+  origin: ['http://localhost:5173','https://kartikay-travelease.netlify.app'], // Allow requests from your frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // Enable cookies or authentication headers if needed
 }));
