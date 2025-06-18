@@ -69,6 +69,14 @@
     font-weight: 500;
     color: var(--text-dark);
     margin-bottom: 0.5rem;
+    text-align: left !important;
+    display: block;
+    width: 100%;
+}
+
+.signup-form .form-group {
+    text-align: left;
+    width: 100%;
 }
 
 .signup-form .form-control {
