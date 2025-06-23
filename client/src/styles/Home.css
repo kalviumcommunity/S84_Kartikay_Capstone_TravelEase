@@ -287,27 +287,29 @@
 
 .destination-of-day-rating {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 24px;
+    left: 24px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 8px 15px;
-    border-radius: 20px;
-    backdrop-filter: blur(4px);
-    z-index: 2;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 12px 22px;
+    border-radius: 24px;
+    backdrop-filter: blur(6px);
+    z-index: 3;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
 }
 
 .destination-of-day-rating svg {
     color: #ffd700;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
 }
 
 .destination-of-day-rating span {
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 600;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .destination-of-day-overlay {
@@ -454,6 +456,19 @@
     .destination-of-day-favorite svg {
         font-size: 2.2rem;
     }
+
+    .destination-of-day-rating {
+        top: 14px;
+        left: 14px;
+        padding: 8px 14px;
+        font-size: 1rem;
+    }
+    .destination-of-day-rating svg {
+        font-size: 1.1rem;
+    }
+    .destination-of-day-rating span {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -480,6 +495,19 @@
 
     .destination-of-day-favorite svg {
         font-size: 2rem;
+    }
+
+    .destination-of-day-rating {
+        top: 8px;
+        left: 8px;
+        padding: 6px 10px;
+        font-size: 0.95rem;
+    }
+    .destination-of-day-rating svg {
+        font-size: 1rem;
+    }
+    .destination-of-day-rating span {
+        font-size: 0.95rem;
     }
 }
 
