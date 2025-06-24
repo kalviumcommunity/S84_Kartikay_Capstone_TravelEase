@@ -25,23 +25,23 @@ export default function DestinationPage() {
         setLoading(true);
         setDestinationNotFound(false);
 
-        const destRes = await axios.get(`http://localhost:3000/api/destinations?city=${destinationName}`);
+        const destRes = await axios.get(`https://travelease-5z19.onrender.com/api/destinations?city=${destinationName}`);
         if (!destRes.data || destRes.data.length === 0) {
           setDestinationNotFound(true);
         } else {
           setDestination(destRes.data[0]);
         }
 
-        const hotelRes = await axios.get(`http://localhost:3000/api/hotels?location=${destinationName}`);
+        const hotelRes = await axios.get(`https://travelease-5z19.onrender.com/api/hotels?location=${destinationName}`);
         setHotels(hotelRes.data);
 
-        const eventRes = await axios.get(`http://localhost:3000/api/events?location=${destinationName}`);
+        const eventRes = await axios.get(`https://travelease-5z19.onrender.com/api/events?location=${destinationName}`);
         setEvents(eventRes.data);
 
-        const cityRes = await axios.get(`http://localhost:3000/api/cities/${destinationName}`);
+        const cityRes = await axios.get(`https://travelease-5z19.onrender.com/api/cities/${destinationName}`);
         setCityInfo(cityRes.data);
 
-        const reviewsRes = await axios.get(`http://localhost:3000/api/reviews?destination=${destinationName}`);
+        const reviewsRes = await axios.get(`https://travelease-5z19.onrender.com/api/reviews?destination=${destinationName}`);
         setReviews(reviewsRes.data);
       } catch (err) {
         console.error('Error fetching data:', err);

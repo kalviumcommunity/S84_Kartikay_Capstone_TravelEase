@@ -88,6 +88,7 @@ const updateReview = async (req, res) => {
     review.comment = req.body.comment || review.comment;
 
     await review.save();
+    await review.populate('user', 'name'); // Populate user name after update
     res.json(review);
   } catch (err) {
     res.status(400).json({ message: err.message });
