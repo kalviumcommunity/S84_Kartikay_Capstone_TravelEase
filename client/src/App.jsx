@@ -9,6 +9,7 @@ import Header from './components/Header';
 import ErrorBoundary from './components/ErrorBoundary';
 import DestinationPage from './components/DestinationPage';
 import DestinationsList from './components/DestinationsList';
+import HotelsList from './components/HotelsList';
 import './App.css';
 
 // Protected Route wrapper component
@@ -61,6 +62,17 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <DestinationsList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/hotels"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <Header />
+                      <HotelsList />
+                    </>
                   </ProtectedRoute>
                 }
               />
