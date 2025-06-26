@@ -10,6 +10,10 @@ import ErrorBoundary from './components/ErrorBoundary';
 import DestinationPage from './components/DestinationPage';
 import DestinationsList from './components/DestinationsList';
 import HotelsList from './components/HotelsList';
+import About from './components/About';
+import Contact from './components/Contact';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import './App.css';
 
 // Protected Route wrapper component
@@ -33,6 +37,10 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
 
               {/* Protected routes */}
               <Route
@@ -83,6 +91,50 @@ function App() {
                     <>
                       <Header />
                       <DestinationPage />
+                    </>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <Header />
+                      <About />
+                    </>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <Header />
+                      <Contact />
+                    </>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/privacy"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <Header />
+                      <PrivacyPolicy />
+                    </>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/terms"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <Header />
+                      <TermsOfService />
                     </>
                   </ProtectedRoute>
                 }
