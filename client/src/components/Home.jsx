@@ -875,7 +875,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="footer-copyright">
-                        <p>© 2024 TravelEase. All rights reserved.</p>
+                        <p>© 2025 TravelEase. All rights reserved.</p>
                     </div>
                 </div>
             </footer>
