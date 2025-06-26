@@ -243,27 +243,27 @@ const LandingPage = () => {
       </section>
 
       {/* FOOTER */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-main">
-            <div className="footer-left">
-              <div className="footer-status">
-                <span className="status-indicator"></span>
+      <footer className="landing-footer">
+        <div className="landing-footer-content">
+          <div className="landing-footer-main">
+            <div className="landing-footer-left">
+              <div className="landing-footer-status">
+                <span className="landing-status-indicator"></span>
                 <span>All systems operational</span>
               </div>
-              <div className="footer-time">
-              <span className="time-display">{currentTime}</span>
+              <div className="landing-footer-time">
+                <span className="landing-time-display">{currentTime}</span>
               </div>
             </div>
-            <div className="footer-center">
-              <div className="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#contact">Contact Us</a>
+            <div className="landing-footer-center">
+              <div className="landing-footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/contact">Contact Us</a>
               </div>
             </div>
           </div>
-          <div className="footer-copyright">
+          <div className="landing-footer-copyright">
             <p>© 2025 TravelEase. All rights reserved.</p>
           </div>
         </div>
