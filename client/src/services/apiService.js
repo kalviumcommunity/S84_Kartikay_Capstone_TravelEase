@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'https://travelease-5z19.onrender.com/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -109,12 +109,12 @@ export const userAPI = {
 
     // Get profile image URL
     getProfileImageUrl: (userId) => {
-        return `http://localhost:3000/api/users/profile-image/${userId}`;
+        return `https://travelease-5z19.onrender.com/api/users/profile-image/${userId}`;
     },
 
     // Get gallery image URL
     getGalleryImageUrl: (imageId) => {
-        return `http://localhost:3000/api/users/gallery-image/${imageId}`;
+        return `https://travelease-5z19.onrender.com/api/users/gallery-image/${imageId}`;
     }
 };
 
