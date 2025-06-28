@@ -261,6 +261,26 @@ const getGalleryImage = async (req, res) => {
     }
 };
 
+// Helper for Google OAuth user creation
+const getOrCreateGoogleUser = async (profile) => {
+    let user = await User.findOne({ googleId: profile.id });
+    if (!user) {
+        // If user with this email exists, link googleId
+        user = await User.findOne({ email: profile.emails[0].value });
+        if (user) {
+            user.googleId = profile.id;
+            await user.save();
+        } else {
+            user = await User.create({
+                name: profile.displayName,
+                email: profile.emails[0].value,
+                googleId: profile.id
+            });
+        }
+    }
+    return user;
+};
+
 module.exports = {
     registerUser,
     loginUser,
@@ -272,5 +292,6 @@ module.exports = {
     uploadGalleryImage,
     getUserGallery,
     deleteGalleryImage,
-    getGalleryImage
+    getGalleryImage,
+    getOrCreateGoogleUser,
 };
