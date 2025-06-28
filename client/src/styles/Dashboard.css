@@ -1,37 +1,116 @@
 .dashboard-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
     padding: 2rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .dashboard-header {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #4f46e5);
+    border-radius: 24px 24px 0 0;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.profile-image-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.profile-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.change-photo-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.change-photo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+    background: linear-gradient(135deg, #4338ca 0%, #0891b2 100%);
+}
+
+.user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .welcome-section h1 {
-    font-size: 2.5rem;
-    color: #2d3748;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
     -webkit-background-clip: text;
-    background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
 .current-time {
-    color: #718096;
-    font-size: 1.1rem;
-    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #64748b;
+    font-weight: 600;
+    margin: 0;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 .current-date {
-    color: #718096;
-    font-size: 1.1rem;
-    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #94a3b8;
+    font-weight: 500;
+    margin: 0;
 }
 
 .trip-progress {
@@ -59,42 +138,88 @@
 }
 
 .dashboard-section {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #4f46e5);
+    border-radius: 24px 24px 0 0;
 }
 
 .dashboard-section h2 {
-    color: #2d3748;
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-    font-weight: 600;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.dashboard-section h2::before {
+    content: '';
+    width: 4px;
+    height: 2rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    border-radius: 2px;
 }
 
 /* Favorites Section */
 .favorites-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
 }
 
 .favorite-card {
-    border: none;
-    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 .favorite-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .favorite-card .card-img-top {
     height: 200px;
     object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+.favorite-card:hover .card-img-top {
+    transform: scale(1.1);
 }
 
 .favorite-card .card-body {
@@ -102,129 +227,356 @@
 }
 
 .favorite-card .card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #2d3748;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1e293b;
     margin-bottom: 1rem;
 }
 
 /* Trips Section */
 .trips-tabs {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .trips-tabs .nav-link {
-    color: #718096;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 10px;
-    margin-right: 0.5rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(79, 70, 229, 0.1);
+    border-radius: 15px;
+    margin-right: 1rem;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.trips-tabs .nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .trips-tabs .nav-link.active {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
     color: white;
+    border-color: transparent;
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
 }
 
 .trips-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
 }
 
 .trip-card {
-    border: none;
-    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(79, 70, 229, 0.1);
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .trip-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .trip-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(79, 70, 229, 0.1);
 }
 
 .trip-header h3 {
-    font-size: 1.3rem;
-    color: #2d3748;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
     margin: 0;
 }
 
 .trip-dates {
-    margin-bottom: 1rem;
-    color: #718096;
+    margin-bottom: 1.5rem;
+}
+
+.trip-dates p {
+    font-size: 1rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .trip-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e2e8f0;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .flight-details, .hotel-details {
-    padding: 1rem;
-    background: #f7fafc;
-    border-radius: 10px;
+    background: rgba(79, 70, 229, 0.05);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 .flight-details h4, .hotel-details h4 {
     font-size: 1.1rem;
-    color: #2d3748;
-    margin-bottom: 0.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-/* Gallery Section */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
-
-.gallery-item {
-    position: relative;
-    border-radius: 15px;
+/* Memories Section */
+.memories-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.1);
     overflow: hidden;
-    aspect-ratio: 1;
+    position: relative;
 }
 
-.gallery-item img {
+.memories-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #4f46e5);
+    border-radius: 24px 24px 0 0;
+}
+
+.memories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.memories-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.memories-count {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 600;
+    background: rgba(79, 70, 229, 0.1);
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.add-memory-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    color: white;
+}
+
+.add-memory-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+    background: linear-gradient(135deg, #4338ca 0%, #0891b2 100%);
+}
+
+.add-memory-btn:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.loading-memories, .empty-memories {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.memories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.memory-item {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
     transition: transform 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e2e8f0;
+    min-height: 400px;
+    max-height: 400px;
+    position: relative;
+    width: 100%;
+    display: block;
+    visibility: visible;
 }
 
-.gallery-item:hover img {
-    transform: scale(1.05);
+.memory-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-.gallery-overlay {
+.memory-image-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    display: block;
+    visibility: visible;
+}
+
+.memory-image-container img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.memory-item:hover .memory-image-container img {
+    transform: scale(1.08);
+}
+
+.delete-memory-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+    background: rgba(220, 53, 69, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+}
+
+.delete-memory-btn:hover {
+    background: rgba(220, 53, 69, 1);
+    transform: scale(1.15);
+}
+
+.memory-item:hover .delete-memory-btn {
+    opacity: 1;
+}
+
+.memory-info {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 1.5rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
     color: white;
+    padding: 2rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 5;
 }
 
-.gallery-overlay h4 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+.memory-item:hover .memory-info {
+    transform: translateY(0);
 }
 
-.gallery-overlay p {
+.memory-info h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.3;
+}
+
+.memory-info p {
+    margin: 0 0 1.5rem 0;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    flex: 1;
+}
+
+.memory-date {
+    font-size: 0.8rem;
+    color: #ffffff;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.9), rgba(6, 182, 212, 0.9));
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    align-self: flex-start;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.memory-date::before {
+    content: '🗓️';
+    margin-right: 0.4rem;
     font-size: 0.9rem;
-    opacity: 0.9;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.memory-date:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 1), rgba(6, 182, 212, 1));
 }
 
 /* Responsive Design */
@@ -237,11 +589,21 @@
         padding: 1.5rem;
     }
 
+    .profile-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
     .welcome-section h1 {
         font-size: 2rem;
     }
 
     .dashboard-section {
+        padding: 1.5rem;
+    }
+
+    .memories-section {
         padding: 1.5rem;
     }
 
@@ -253,16 +615,103 @@
         grid-template-columns: 1fr;
     }
 
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    .memories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        max-width: none;
+    }
+
+    .memory-item {
+        min-height: 350px;
+        max-height: 350px;
+    }
+
+    .memory-image-container {
+        height: 350px;
+    }
+
+    .memory-info {
+        padding: 1.5rem;
+    }
+
+    .memory-info h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .memory-info p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .memory-date {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+    }
+
+    .memories-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .memories-controls {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .memories-count {
+        text-align: center;
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .add-memory-btn {
+        width: 100%;
     }
 }
 
-/* Animations */
+@media (max-width: 480px) {
+    .memories-section {
+        padding: 1rem;
+    }
+
+    .memories-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .memory-item {
+        min-height: 300px;
+    }
+
+    .memory-image-container {
+        height: 300px;
+    }
+
+    .memory-info {
+        padding: 1rem;
+    }
+
+    .memory-info h4 {
+        font-size: 1.1rem;
+    }
+
+    .memory-info p {
+        font-size: 0.85rem;
+    }
+
+    .memory-date {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.7rem;
+    }
+}
+
+/* Modern Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -270,6 +719,142 @@
     }
 }
 
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .dashboard-section {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.memories-section {
+    animation: slideIn 0.6s ease-out;
+}
+
+.memory-item {
+    animation: scaleIn 0.6s ease-out;
+}
+
+/* Date input styling */
+input[type="date"] {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+    display: none;
+}
+
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+/* Essential image visibility fix - with high specificity */
+.memories-section .memories-grid .memory-item .memory-image-container img,
+.dashboard-container .memories-section .memory-image-container img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    position: relative !important;
+    z-index: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    filter: none !important;
+    transform: none !important;
+}
+
+/* Ensure gallery containers are visible */
+.memories-section .memories-grid .memory-item,
+.memories-section .memory-image-container {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+    background: white !important;
+}
+
+.memory-date-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 5;
+    transition: all 0.3s ease;
+}
+
+.memory-date-overlay::before {
+    content: '🗓️';
+    margin-right: 0.3rem;
+    font-size: 0.8rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.memory-date-overlay:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-1px);
+}
+
+.profile-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.change-photo-btn,
+.delete-photo-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.change-photo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.delete-photo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 } 
