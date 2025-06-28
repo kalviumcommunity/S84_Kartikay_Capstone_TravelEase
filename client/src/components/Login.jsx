@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Login.css';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -17,18 +19,18 @@ function Login() {
     const location = useLocation();
     const showPopup = location.state?.popup;
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
+        setFormData(prev => ({
+            ...prev,
             [name]: value
         }));
-    };
+    }, []);
 
-    const resetForm = () => {
+    const resetForm = useCallback(() => {
         setFormData({ email: '', password: '' });
         setValidated(false);
-    };
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,36 +44,77 @@ function Login() {
 
         setIsLoading(true);
         setValidated(true);
+        setMessage(''); // Clear any previous messages
     
         try {
+            // Set a timeout for the API call to prevent hanging
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // Increased to 30 seconds
+
             const response = await fetch('https://travelease-5z19.onrender.com/api/users/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 credentials: 'include',
                 body: JSON.stringify({
                     email: formData.email,
                     password: formData.password
-                })
+                }),
+                signal: controller.signal
             });
     
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Login failed');
+            }
+
             const data = await response.json();
     
-            if (response.ok) {
+            if (data && data.token && data.user) {
+                // Start the login process
                 await login(data);
                 setMessage('✅ Login successful! Welcome back.');
                 resetForm();
-            
+                
+                // Navigate after the delay
                 setTimeout(() => {
                     navigate('/dashboard');
                 }, 1500);
             } else {
-                setMessage(data.error || '❌ Login failed. Please check your credentials.');
+                throw new Error('Invalid response from server');
             }
         } catch (error) {
-            console.error('Login Error:', error);
-            setMessage('❌ Error logging in. Please try again later.');
+            if (error.name === 'AbortError') {
+                setMessage('❌ The server is taking too long to respond. Please try again in a few moments.');
+            } else if (error.message === 'Invalid response from server') {
+                setMessage('❌ Server response was invalid. Please try again.');
+            } else {
+                console.error('Login Error:', error);
+                setMessage(error.message || '❌ Error logging in. Please try again later.');
+            }
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleGoogleLoginSuccess = async (credentialResponse) => {
+        try {
+            // Send Google ID token to backend for verification and login/signup
+            const res = await axios.post('https://travelease-5z19.onrender.com/api/users/auth/google/token', {
+                token: credentialResponse.credential
+            });
+            if (res.data.token && res.data.user) {
+                await login(res.data); // Store JWT and user info
+                navigate('/dashboard'); // Redirect to dashboard
+            } else {
+                setMessage('Google login failed: No token returned');
+            }
+        } catch (err) {
+            setMessage('Google login failed: ' + (err.response?.data?.error || err.message));
         }
     };
 
@@ -112,6 +155,7 @@ function Login() {
                             value={formData.email}
                             onChange={handleChange}
                             required
+                            autoComplete="email"
                         />
                         <Form.Control.Feedback type="invalid">
                             Please enter a valid email address.
@@ -128,6 +172,7 @@ function Login() {
                             onChange={handleChange}
                             required
                             minLength={6}
+                            autoComplete="current-password"
                         />
                         <Form.Control.Feedback type="invalid">
                             Password must be at least 6 characters long.
@@ -158,6 +203,11 @@ function Login() {
                         Sign up here
                     </a>
                 </div>
+
+                <GoogleLogin
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={() => { /* handle error */ }}
+                />
             </div>
         </div>
     );

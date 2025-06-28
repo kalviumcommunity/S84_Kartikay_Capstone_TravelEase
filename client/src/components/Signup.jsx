@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Signup.css';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 function Signup() {
     const [formData, setFormData] = useState({
@@ -16,6 +19,7 @@ function Signup() {
     const [validated, setValidated] = useState(false);
 
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -78,6 +82,25 @@ function Signup() {
             setMessage('❌ Error signing up. Please try again later.');
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleGoogleSignupSuccess = async (credentialResponse) => {
+        try {
+            const res = await axios.post('https://travelease-5z19.onrender.com/api/users/auth/google/token', {
+                token: credentialResponse.credential
+            });
+            if (res.data.token && res.data.user) {
+                await login(res.data);
+                setMessage('✅ Signup successful! Welcome to TravelEase. Redirecting...');
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 1500);
+            } else {
+                setMessage('Google signup failed: No token returned');
+            }
+        } catch (err) {
+            setMessage('Google signup failed: ' + (err.response?.data?.error || err.message));
         }
     };
 
@@ -170,6 +193,11 @@ function Signup() {
                         <p>Already have an account? <a href="/login">Log in</a></p>
                     </div>
                 </Form>
+
+                <GoogleLogin
+                    onSuccess={handleGoogleSignupSuccess}
+                    onError={() => { /* handle error */ }}
+                />
             </div>
         </div>
     );
