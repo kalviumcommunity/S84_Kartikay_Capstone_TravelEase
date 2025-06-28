@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { userAPI } from '../services/apiService';
 
 const AuthContext = createContext();
 
@@ -35,6 +36,9 @@ export const AuthProvider = ({ children }) => {
 
       const { token: newToken, user: userData } = data;
 
+      console.log('Login response - user data:', userData);
+      console.log('Login response - profileImage:', userData.profileImage);
+
       // Normalize user data
       const normalizedUser = {
         _id: userData.id || userData._id,
@@ -42,6 +46,8 @@ export const AuthProvider = ({ children }) => {
         email: userData.email,
         role: userData.role || 'user'
       };
+
+      console.log('Normalized user data:', normalizedUser);
 
       // Store auth data
       localStorage.setItem('user', JSON.stringify(normalizedUser));
@@ -74,6 +80,21 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const updateUser = useCallback((updatedUserData) => {
+    try {
+      console.log('Updating user data:', updatedUserData);
+      console.log('Current user data:', user);
+      
+      const updatedUser = { ...user, ...updatedUserData };
+      console.log('Updated user data:', updatedUser);
+      
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
+  }, [user]);
+
   const isAuthenticated = useCallback(() => {
     return !!token && !!user;
   }, [token, user]);
@@ -87,6 +108,7 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         login, 
         logout,
+        updateUser,
         isAuthenticated
       }}
     >
