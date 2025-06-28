@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Card, Button, Tabs, Tab, Badge } from 'react-bootstrap';
+import { Card, Button, Tabs, Tab, Badge, Modal, Alert, Spinner } from 'react-bootstrap';
+import FileUpload from './FileUpload';
+import GalleryUploadModal from './GalleryUploadModal';
+import { userAPI } from '../services/apiService';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
-    const { user } = useAuth();
-
-    if (!user) {
-        return <div>Please log in to access the dashboard.</div>;
-    }
+    const { user, updateUser } = useAuth();
     const [activeTab, setActiveTab] = useState('upcoming');
     const [currentTime, setCurrentTime] = useState('');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [greeting, setGreeting] = useState('');
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const [showGalleryModal, setShowGalleryModal] = useState(false);
+    const [gallery, setGallery] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [hasProfileImage, setHasProfileImage] = useState(false);
 
     // Sample data - replace with actual API calls
     const [favorites] = useState([
@@ -89,24 +94,19 @@ const Dashboard = () => {
         completed: []
     });
 
-    const [gallery] = useState([
-        { id: 1, image: 'https://images.pexels.com/photos/3155666/pexels-photo-3155666.jpeg', location: 'Bali, Indonesia', date: '2025-06-15' },
-        { id: 2, image: 'https://images.pexels.com/photos/2365457/pexels-photo-2365457.jpeg', location: 'Paris, France', date: '2025-07-01' },
-        { id: 3, image: 'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg', location: 'Tokyo, Japan', date: '2025-05-01' }
-    ]);
-
     useEffect(() => {
-        // Update time, date, and greeting
         const updateTimeAndGreeting = () => {
             const now = new Date();
-            const hours = now.getHours();
+            const hour = now.getHours();
             
-            // Set greeting based on time of day
-            if (hours < 12) setGreeting('Good Morning');
-            else if (hours < 18) setGreeting('Good Afternoon');
-            else setGreeting('Good Evening');
-
-            // Format time
+            if (hour < 12) {
+                setGreeting('Good Morning');
+            } else if (hour < 18) {
+                setGreeting('Good Afternoon');
+            } else {
+                setGreeting('Good Evening');
+            }
+            
             const options = {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -120,8 +120,151 @@ const Dashboard = () => {
         updateTimeAndGreeting();
         const interval = setInterval(updateTimeAndGreeting, 1000);
 
+        // Load user gallery only once when component mounts
+        if (user && !loading) {
+            loadUserGallery();
+        }
+
         return () => clearInterval(interval);
-    }, []);
+    }, [user]); // Only depend on user changes
+
+    const loadUserGallery = async () => {
+        if (loading) return; // Prevent multiple simultaneous calls
+        
+        try {
+            setLoading(true);
+            console.log('Loading user gallery...');
+            const response = await userAPI.getUserGallery();
+            console.log('Gallery response:', response);
+            
+            if (response && response.gallery) {
+                setGallery(response.gallery);
+                console.log('Gallery loaded successfully:', response.gallery.length, 'images');
+            } else {
+                console.log('No gallery data in response');
+                setGallery([]);
+            }
+        } catch (error) {
+            console.error('Error loading gallery:', error);
+            setError('Failed to load gallery');
+            setGallery([]);
+        } finally {
+            setLoading(false);
+            console.log('Gallery loading finished');
+        }
+    };
+
+    // Function to reload header profile image
+    const reloadHeaderProfileImage = () => {
+        const headerProfileImg = document.querySelector('.header-profile-image');
+        if (headerProfileImg) {
+            headerProfileImg.src = userAPI.getProfileImageUrl(user._id) + '?t=' + new Date().getTime();
+        }
+    };
+
+    const handleProfileImageUpload = async (file) => {
+        try {
+            const response = await userAPI.uploadProfileImage(file);
+            console.log('Profile upload response:', response);
+            setShowProfileModal(false);
+            setError(''); // Clear any existing errors
+            // Refresh profile image state
+            setTimeout(() => {
+                checkProfileImage();
+                // Force reload the profile image
+                const profileImg = document.querySelector('.profile-image');
+                if (profileImg) {
+                    profileImg.src = userAPI.getProfileImageUrl(user._id) + '?t=' + new Date().getTime();
+                }
+                // Reload header profile image
+                reloadHeaderProfileImage();
+            }, 500);
+        } catch (error) {
+            console.error('Profile upload error:', error);
+            setError('Failed to upload profile image');
+        }
+    };
+
+    const handleDeleteProfileImage = async () => {
+        if (window.confirm('Are you sure you want to delete your profile photo?')) {
+            try {
+                await userAPI.deleteProfileImage();
+                setError(''); // Clear any existing errors
+                // Refresh profile image state
+                setHasProfileImage(false);
+                // Force reload the profile image to show default
+                const profileImg = document.querySelector('.profile-image');
+                if (profileImg) {
+                    profileImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2QjcyODAiLz4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAxMmMyLjIxIDAgNC0xLjc5IDQtNHMtMS43OS00LTQtNC00IDEuNzktNCA0IDEuNzkgNCA0IDR6bTAgMmMtMi42NyAwLTggMS4zNC04IDR2MmgxNnYtMmMwLTIuNjYtNS4zMy00LTgtNHoiLz4KPC9zdmc+Cjwvc3ZnPgo=';
+                }
+                // Reload header profile image to show default
+                reloadHeaderProfileImage();
+            } catch (error) {
+                console.error('Error deleting profile image:', error);
+                setError('Failed to delete profile image');
+            }
+        }
+    };
+
+    // Check if user has profile image
+    const checkProfileImage = async () => {
+        try {
+            const response = await fetch(userAPI.getProfileImageUrl(user._id));
+            setHasProfileImage(response.ok);
+        } catch (error) {
+            setHasProfileImage(false);
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            checkProfileImage();
+        }
+    }, [user]);
+
+    const handleChangePhotoClick = () => {
+        if (hasProfileImage) {
+            alert('Please delete your current profile photo first before uploading a new one.');
+        } else {
+            setShowProfileModal(true);
+        }
+    };
+
+    const handleGalleryUploadSuccess = async () => {
+        console.log('Gallery upload success, reloading gallery...');
+        // Add a small delay to ensure backend has processed the upload
+        setTimeout(async () => {
+            try {
+                if (!loading) { // Only reload if not already loading
+                    await loadUserGallery();
+                    console.log('Gallery reloaded successfully');
+                    // Force reload all gallery images to ensure they display correctly
+                    const galleryImages = document.querySelectorAll('.memory-image');
+                    galleryImages.forEach(img => {
+                        if (img.src && !img.src.includes('data:')) {
+                            img.src = img.src + '?t=' + new Date().getTime();
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error reloading gallery:', error);
+            }
+        }, 1000);
+    };
+
+    const handleDeleteGalleryImage = async (imageId) => {
+        if (window.confirm('Are you sure you want to delete this image?')) {
+            try {
+                await userAPI.deleteGalleryImage(imageId);
+                // Immediate reload of gallery after deletion
+                await loadUserGallery();
+                console.log('Gallery reloaded after deletion');
+            } catch (error) {
+                console.error('Error deleting image:', error);
+                setError('Failed to delete image');
+            }
+        }
+    };
 
     const calculateTimeRemaining = (startDate) => {
         const start = new Date(startDate);
@@ -201,11 +344,69 @@ const Dashboard = () => {
             {/* Header Section */}
             <div className="dashboard-header">
                 <div className="welcome-section">
-                    <h1>{greeting}, {user?.name}!</h1>
-                    <p className="current-time">{currentTime}</p>
-                    <p className="current-date">{currentDate.toLocaleDateString()}</p>
+                    <div className="profile-section">
+                        <div className="profile-image-container">
+                            <img 
+                                src={userAPI.getProfileImageUrl(user._id)} 
+                                alt="Profile" 
+                                className="profile-image"
+                                onLoad={() => {
+                                    console.log('Profile image loaded successfully');
+                                    console.log('Full image URL:', userAPI.getProfileImageUrl(user._id));
+                                }}
+                                onError={(e) => {
+                                    console.error('Profile image failed to load');
+                                    console.error('Attempted URL:', e.target.src);
+                                    // Show default avatar on error
+                                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2QjcyODAiLz4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAxMmMyLjIxIDAgNC0xLjc5IDQtNHMtMS43OS00LTQtNC00IDEuNzktNCA0IDEuNzkgNCA0IDR6bTAgMmMtMi42NyAwLTggMS4zNC04IDR2MmgxNnYtMmMwLTIuNjYtNS4zMy00LTgtNHoiLz4KPC9zdmc+Cjwvc3ZnPgo=';
+                                }}
+                            />
+                            <div className="profile-buttons">
+                                {hasProfileImage ? (
+                                    <>
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm" 
+                                            className="change-photo-btn"
+                                            onClick={handleChangePhotoClick}
+                                        >
+                                            Change Photo
+                                        </Button>
+                                        <Button 
+                                            variant="outline-danger" 
+                                            size="sm" 
+                                            className="delete-photo-btn"
+                                            onClick={handleDeleteProfileImage}
+                                        >
+                                            Delete Photo
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <Button 
+                                        variant="outline-primary" 
+                                        size="sm" 
+                                        className="change-photo-btn"
+                                        onClick={handleChangePhotoClick}
+                                    >
+                                        Add Photo
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                        <div className="user-info">
+                            <h1>{greeting}, {user?.name}!</h1>
+                            <p className="current-time">{currentTime}</p>
+                            <p className="current-date">{currentDate.toLocaleDateString()}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            {error && (
+                <Alert variant="danger" dismissible onClose={() => setError('')}>
+                    {error}
+                </Alert>
+            )}
 
             {/* Favorites Section */}
             <section className="dashboard-section">
@@ -249,21 +450,110 @@ const Dashboard = () => {
                 </Tabs>
             </section>
 
-            {/* Gallery Section */}
-            <section className="dashboard-section">
-                <h2>Travel Gallery</h2>
-                <div className="gallery-grid">
-                    {gallery.map(photo => (
-                        <div key={photo.id} className="gallery-item">
-                            <img src={photo.image} alt={photo.location} />
-                            <div className="gallery-overlay">
-                                <h4>{photo.location}</h4>
-                                <p>{new Date(photo.date).toLocaleDateString()}</p>
-                            </div>
-                        </div>
-                    ))}
+            {/* Memories Section */}
+            <section className="memories-section">
+                <div className="memories-header">
+                    <h2>My Travel Memories</h2>
+                    <div className="memories-controls">
+                        <span className="memories-count">
+                            {gallery.length}/9 photos
+                        </span>
+                        <Button 
+                            variant="primary" 
+                            size="sm"
+                            onClick={() => setShowGalleryModal(true)}
+                            className="add-memory-btn"
+                            disabled={gallery.length >= 9}
+                        >
+                            📸 Add Memory
+                        </Button>
+                    </div>
                 </div>
+
+                {loading ? (
+                    <div className="loading-memories">
+                        <Spinner animation="border" variant="primary" />
+                    </div>
+                ) : gallery.length === 0 ? (
+                    <div className="empty-memories">
+                        <p>No travel memories yet. Start by adding your first photo!</p>
+                    </div>
+                ) : (
+                    <div className="memories-grid">
+                        {gallery.map(photo => {
+                            const imageUrl = userAPI.getGalleryImageUrl(photo._id);
+                            
+                            return (
+                                <div key={photo._id} className="memory-item">
+                                    <div className="memory-image-container">
+                                        <img 
+                                            src={imageUrl} 
+                                            alt={photo.description || 'Travel memory'} 
+                                            className="memory-image"
+                                            onError={(e) => {
+                                                console.error('Memory image failed to load:', e.target.src);
+                                                e.target.style.display = 'none';
+                                            }}
+                                            onLoad={() => console.log('Memory image loaded successfully:', photo._id)}
+                                        />
+                                        {photo.tripDate && (
+                                            <div className="memory-date-overlay">
+                                                {new Date(photo.tripDate).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric'
+                                                })}
+                                            </div>
+                                        )}
+                                        <Button 
+                                            variant="danger" 
+                                            size="sm" 
+                                            className="delete-memory-btn"
+                                            onClick={() => handleDeleteGalleryImage(photo._id)}
+                                            title="Delete this photo"
+                                        >
+                                            ✕
+                                        </Button>
+                                    </div>
+                                    <div className="memory-info">
+                                        <h4>{photo.location}</h4>
+                                        {photo.description && <p className="description">{photo.description}</p>}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+
+                {gallery.length >= 9 && (
+                    <Alert variant="warning" className="mt-3">
+                        <strong>Memories Full!</strong> You've reached the maximum of 9 photos. Delete some photos to upload new ones.
+                    </Alert>
+                )}
             </section>
+
+            {/* Profile Image Upload Modal */}
+            <Modal show={showProfileModal} onHide={() => setShowProfileModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Profile Photo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <FileUpload
+                        onUpload={handleProfileImageUpload}
+                        buttonText="Choose Profile Photo"
+                        maxSize={5}
+                        showPreview={true}
+                    />
+                </Modal.Body>
+            </Modal>
+
+            {/* Gallery Upload Modal */}
+            <GalleryUploadModal
+                show={showGalleryModal}
+                onHide={() => setShowGalleryModal(false)}
+                onUploadSuccess={handleGalleryUploadSuccess}
+                currentGalleryCount={gallery.length}
+            />
         </div>
     );
 };
