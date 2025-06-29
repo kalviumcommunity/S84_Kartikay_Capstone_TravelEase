@@ -22,6 +22,7 @@ const Dashboard = () => {
     const [favorites, setFavorites] = useState([]);
     const [favoriteDetails, setFavoriteDetails] = useState([]);
     const [removingFavorite, setRemovingFavorite] = useState(null);
+    const [favoritesLoading, setFavoritesLoading] = useState(true);
 
     // Sample data - replace with actual API calls
     const [trips] = useState({
@@ -340,6 +341,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchFavorites = async () => {
             if (user && user._id) {
+                setFavoritesLoading(true);
                 try {
                     const res = await userAPI.getFavorites(user._id);
                     setFavorites(res.favorites || []);
@@ -350,7 +352,13 @@ const Dashboard = () => {
                     setFavoriteDetails(details);
                 } catch (err) {
                     setError('Failed to load favorites');
+                } finally {
+                    setFavoritesLoading(false);
                 }
+            } else {
+                setFavorites([]);
+                setFavoriteDetails([]);
+                setFavoritesLoading(false);
             }
         };
         fetchFavorites();
@@ -443,7 +451,9 @@ const Dashboard = () => {
             <section className="dashboard-section">
                 <h2>Favorite Destinations</h2>
                 <div className="dashboard-fav-list">
-                    {favoriteDetails.length === 0 ? (
+                    {favoritesLoading ? (
+                        <div style={{ textAlign: 'center', color: '#64748b', fontWeight: 500, fontSize: '1.05em', padding: '2.5rem 1rem' }}>Fetching favorites...</div>
+                    ) : favoriteDetails.length === 0 ? (
                         <div className="empty-favorites" style={{
                             textAlign: 'center',
                             padding: '2.5rem 1rem',
