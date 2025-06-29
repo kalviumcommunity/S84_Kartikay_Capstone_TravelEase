@@ -1083,7 +1083,10 @@ const DestinationsList = () => {
   const [selectedGenre, setSelectedGenre] = useState('All');
   const [pageData, setPageData] = useState({ pageDestinations: [], pageGenres: [] });
   const [favorites, setFavorites] = useState(new Set());
+  const [favoritesLoading, setFavoritesLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState('');
+  const [addingFavorite, setAddingFavorite] = useState(null);
+  const [favoriteAction, setFavoriteAction] = useState(null);
   const { user, isLoggedIn } = useAuth();
 
   useEffect(() => {
@@ -1118,15 +1121,20 @@ const DestinationsList = () => {
   useEffect(() => {
     // Fetch favorites from backend on mount and when user changes
     if (isLoggedIn && user && user._id) {
+      setFavoritesLoading(true);
       userAPI.getFavorites(user._id)
         .then(res => {
           setFavorites(new Set(res.favorites || []));
         })
         .catch(err => {
           console.error('Failed to fetch favorites:', err);
+        })
+        .finally(() => {
+          setFavoritesLoading(false);
         });
     } else {
       setFavorites(new Set());
+      setFavoritesLoading(false);
     }
   }, [isLoggedIn, user]);
 
@@ -1135,17 +1143,27 @@ const DestinationsList = () => {
       alert('Please log in to use favorites!');
       return;
     }
+    const isCurrentlyFavorite = favorites.has(name);
+    setAddingFavorite(name);
+    setFavoriteAction(isCurrentlyFavorite ? 'remove' : 'add');
     try {
-      if (favorites.has(name)) {
+      // Optimistically update UI
+      if (isCurrentlyFavorite) {
+        setFavorites(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(name);
+          return newSet;
+        });
         await userAPI.removeFavorite(user._id, name);
       } else {
+        setFavorites(prev => new Set(prev).add(name));
         await userAPI.addFavorite(user._id, name);
       }
-      // Refetch favorites from backend for immediate UI update
-      const res = await userAPI.getFavorites(user._id);
-      setFavorites(new Set(res.favorites || []));
     } catch (err) {
       console.error('Failed to update favorite:', err);
+    } finally {
+      setAddingFavorite(null);
+      setFavoriteAction(null);
     }
   };
 
@@ -1205,9 +1223,26 @@ const DestinationsList = () => {
               <div className="destination-horizontal-info">
                 <div className="destination-horizontal-header">
                   <h3>{dest.name}</h3>
-                  <button className={`destination-fav-btn${favorites.has(dest.name) ? ' active' : ''}`} onClick={() => handleFavorite(dest.name)}>
-                    <span role="img" aria-label="favorite">{favorites.has(dest.name) ? '❤️' : '🤍'}</span>
-                  </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    {favoritesLoading ? (
+                      <span className="favorite-spinner" style={{ margin: '8px 0', color: '#64748b', fontWeight: 500, fontSize: '0.93em' }}>Fetching favorites...</span>
+                    ) : (
+                      <>
+                        <button
+                          className={`destination-fav-btn${favorites.has(dest.name) ? ' active' : ''}`}
+                          onClick={() => handleFavorite(dest.name)}
+                          disabled={addingFavorite === dest.name}
+                        >
+                          <span role="img" aria-label="favorite">{favorites.has(dest.name) ? '❤️' : '🤍'}</span>
+                        </button>
+                        {addingFavorite === dest.name && favoriteAction && (
+                          <span className="adding-favorite-text" style={{ marginTop: 2, color: '#64748b', fontWeight: 500, fontSize: '0.93em' }}>
+                            {favoriteAction === 'add' ? 'Adding to favorite...' : 'Removing from favorite...'}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
                 <div className="destination-horizontal-rating">
                   <span role="img" aria-label="star">⭐</span> {dest.rating || (4 + (idx % 2) + (Math.random() * 0.5)).toFixed(1)}
