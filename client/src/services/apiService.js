@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://travelease-5z19.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -115,6 +115,31 @@ export const userAPI = {
     // Get gallery image URL
     getGalleryImageUrl: (imageId) => {
         return `https://travelease-5z19.onrender.com/api/users/gallery-image/${imageId}`;
+    },
+
+    // Get user favorites
+    getFavorites: async (userId) => {
+        return apiCall(`/users/${userId}/favorites`);
+    },
+
+    // Add a favorite
+    addFavorite: async (userId, destinationId) => {
+        return apiCall(`/users/${userId}/favorites`, {
+            method: 'POST',
+            body: JSON.stringify({ destinationId })
+        });
+    },
+
+    // Remove a favorite
+    removeFavorite: async (userId, destinationId) => {
+        return apiCall(`/users/${userId}/favorites/${destinationId}`, {
+            method: 'DELETE'
+        });
+    },
+
+    // Get destination by name
+    getDestinationByName: async (name) => {
+        return apiCall(`/destinations/${encodeURIComponent(name)}`);
     }
 };
 

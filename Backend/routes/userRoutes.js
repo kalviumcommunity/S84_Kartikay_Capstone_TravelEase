@@ -10,7 +10,10 @@ const {
     uploadGalleryImage,
     getUserGallery,
     deleteGalleryImage,
-    getGalleryImage
+    getGalleryImage,
+    getFavorites,
+    addFavorite,
+    removeFavorite
 } = require('../controllers/userController.js');
 const { protect } = require('../middleware/authMiddleware'); // Middleware for protected routes
 const { uploadProfile, uploadGallery } = require('../middleware/uploadMiddleware');
@@ -103,5 +106,10 @@ router.post('/auth/google/token', async (req, res) => {
     res.status(401).json({ error: 'Invalid Google token' });
   }
 });
+
+// Favorites routes
+router.get('/:userId/favorites', protect, getFavorites);
+router.post('/:userId/favorites', protect, addFavorite);
+router.delete('/:userId/favorites/:destinationId', protect, removeFavorite);
 
 module.exports = router;

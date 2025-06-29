@@ -18,7 +18,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
         sparse: true // allow multiple nulls
-    }
+    },
+    favorites: [{
+        type: String // or ObjectId if you want to reference Destination documents
+    }]
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

@@ -4,6 +4,7 @@ import { Card, Button, Tabs, Tab, Badge, Modal, Alert, Spinner } from 'react-boo
 import FileUpload from './FileUpload';
 import GalleryUploadModal from './GalleryUploadModal';
 import { userAPI } from '../services/apiService';
+import { DESTINATIONS } from './DestinationsList';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -18,14 +19,11 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [hasProfileImage, setHasProfileImage] = useState(false);
+    const [favorites, setFavorites] = useState([]);
+    const [favoriteDetails, setFavoriteDetails] = useState([]);
+    const [removingFavorite, setRemovingFavorite] = useState(null);
 
     // Sample data - replace with actual API calls
-    const [favorites] = useState([
-        { id: 1, name: 'Bali, Indonesia', image: 'https://images.pexels.com/photos/3155666/pexels-photo-3155666.jpeg' },
-        { id: 2, name: 'Paris, France', image: 'https://images.pexels.com/photos/2365457/pexels-photo-2365457.jpeg' },
-        { id: 3, name: 'Tokyo, Japan', image: 'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg' }
-    ]);
-
     const [trips] = useState({
         upcoming: [
             {
@@ -339,6 +337,39 @@ const Dashboard = () => {
         );
     };
 
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            if (user && user._id) {
+                try {
+                    const res = await userAPI.getFavorites(user._id);
+                    setFavorites(res.favorites || []);
+                    // Lookup details for each favorite from DESTINATIONS
+                    const details = (res.favorites || []).map(fav => {
+                        return DESTINATIONS.find(dest => dest.name === fav) || { name: fav, description: 'No details found', image: '' };
+                    });
+                    setFavoriteDetails(details);
+                } catch (err) {
+                    setError('Failed to load favorites');
+                }
+            }
+        };
+        fetchFavorites();
+    }, [user]);
+
+    const handleRemoveFavorite = async (destinationId) => {
+        if (!user || !user._id) return;
+        setRemovingFavorite(destinationId);
+        try {
+            await userAPI.removeFavorite(user._id, destinationId);
+            setFavorites(prev => prev.filter(fav => fav !== destinationId));
+            setFavoriteDetails(prev => prev.filter(fav => fav.name !== destinationId));
+        } catch (err) {
+            setError('Failed to remove favorite');
+        } finally {
+            setRemovingFavorite(null);
+        }
+    };
+
     return (
         <div className="dashboard-container">
             {/* Header Section */}
@@ -411,16 +442,60 @@ const Dashboard = () => {
             {/* Favorites Section */}
             <section className="dashboard-section">
                 <h2>Favorite Destinations</h2>
-                <div className="favorites-grid">
-                    {favorites.map(favorite => (
-                        <Card key={favorite.id} className="favorite-card">
-                            <Card.Img variant="top" src={favorite.image} />
-                            <Card.Body>
-                                <Card.Title>{favorite.name}</Card.Title>
-                                <Button variant="outline-primary" size="sm">View Details</Button>
-                            </Card.Body>
-                        </Card>
-                    ))}
+                <div className="dashboard-fav-list">
+                    {favoriteDetails.length === 0 ? (
+                        <div className="empty-favorites" style={{
+                            textAlign: 'center',
+                            padding: '2.5rem 1rem',
+                            color: '#64748b',
+                            fontSize: '1.15rem',
+                            background: 'rgba(255,255,255,0.7)',
+                            borderRadius: '18px',
+                            boxShadow: '0 4px 18px rgba(79,70,229,0.07)',
+                            margin: '1.5rem auto',
+                            maxWidth: 480
+                        }}>
+                            <span style={{fontSize: '2.2rem', display: 'block', marginBottom: '0.7rem'}}>💔</span>
+                            <p style={{margin: 0}}>You have no favorite destinations yet.<br/>Start exploring and add some favorites!</p>
+                        </div>
+                    ) : (
+                        favoriteDetails.map(fav => (
+                            <div className="dashboard-fav-card" key={fav.name}>
+                                <div className="dashboard-fav-image-wrapper">
+                                    <img src={fav.image} alt={fav.name} className="dashboard-fav-image" />
+                                </div>
+                                <div className="dashboard-fav-info">
+                                    <div className="dashboard-fav-header">
+                                        <h3>{fav.name}</h3>
+                                        <button
+                                            className="dashboard-fav-remove-btn"
+                                            onClick={() => handleRemoveFavorite(fav.name)}
+                                            title="Remove from favorites"
+                                            disabled={removingFavorite === fav.name}
+                                            style={removingFavorite === fav.name ? { opacity: 0.5, pointerEvents: 'none' } : {}}
+                                        >
+                                            {removingFavorite === fav.name ? (
+                                                <span className="dashboard-fav-removing-spinner" role="status" aria-label="removing">⏳</span>
+                                            ) : (
+                                                <span role="img" aria-label="favorite">❤️</span>
+                                            )}
+                                        </button>
+                                    </div>
+                                    <span className="dashboard-fav-remove-hint">Click heart to remove</span>
+                                    <div className="dashboard-fav-rating">
+                                        <span role="img" aria-label="star">⭐</span> {fav.rating}
+                                        <span className="dashboard-fav-genre">{fav.genre}</span>
+                                    </div>
+                                    <p className="dashboard-fav-desc">{fav.description}</p>
+                                    <div className="dashboard-fav-details">
+                                        <span><strong>Country:</strong> {fav.country}</span>
+                                        <span><strong>Best Time:</strong> {fav.bestTime}</span>
+                                        <span><strong>Popular for:</strong> {fav.popularFor}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </section>
 
