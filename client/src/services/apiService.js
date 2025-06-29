@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'https://travelease-5z19.onrender.com/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
