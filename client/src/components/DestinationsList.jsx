@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import '../styles/DestinationList.css';
 import heroVideo from '../assets/destination.mp4';
+import { userAPI } from '../services/apiService';
+import { useAuth } from '../context/AuthContext';
 
 // Example genres and destinations array
 const GENRES = [
@@ -341,7 +343,7 @@ const DESTINATIONS = [
   {
     name: 'Varanasi',
     genre: 'Cultural & Religious',
-    image: 'https://images.pexels.com/photos/8112524/pexels-photo-8112524.jpegg',
+    image: 'https://images.pexels.com/photos/8112524/pexels-photo-8112524.jpeg',
     description: "Varanasi is one of the world's oldest cities, sacred to Hindus and famous for its ghats along the Ganges River, spiritual rituals, and vibrant festivals.",
     country: 'India',
     bestTime: 'October–March',
@@ -1082,6 +1084,7 @@ const DestinationsList = () => {
   const [pageData, setPageData] = useState({ pageDestinations: [], pageGenres: [] });
   const [favorites, setFavorites] = useState(new Set());
   const [currentTime, setCurrentTime] = useState('');
+  const { user, isLoggedIn } = useAuth();
 
   useEffect(() => {
     if (selectedGenre === 'All') {
@@ -1112,13 +1115,38 @@ const DestinationsList = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleFavorite = (name) => {
-    setFavorites(prev => {
-      const newFav = new Set(prev);
-      if (newFav.has(name)) newFav.delete(name);
-      else newFav.add(name);
-      return newFav;
-    });
+  useEffect(() => {
+    // Fetch favorites from backend on mount and when user changes
+    if (isLoggedIn && user && user._id) {
+      userAPI.getFavorites(user._id)
+        .then(res => {
+          setFavorites(new Set(res.favorites || []));
+        })
+        .catch(err => {
+          console.error('Failed to fetch favorites:', err);
+        });
+    } else {
+      setFavorites(new Set());
+    }
+  }, [isLoggedIn, user]);
+
+  const handleFavorite = async (name) => {
+    if (!isLoggedIn || !user || !user._id) {
+      alert('Please log in to use favorites!');
+      return;
+    }
+    try {
+      if (favorites.has(name)) {
+        await userAPI.removeFavorite(user._id, name);
+      } else {
+        await userAPI.addFavorite(user._id, name);
+      }
+      // Refetch favorites from backend for immediate UI update
+      const res = await userAPI.getFavorites(user._id);
+      setFavorites(new Set(res.favorites || []));
+    } catch (err) {
+      console.error('Failed to update favorite:', err);
+    }
   };
 
   // Calculate total pages (use all destinations at least once)
@@ -1264,4 +1292,5 @@ const DestinationsList = () => {
   );
 };
 
-export default DestinationsList; 
+export default DestinationsList;
+export { DESTINATIONS }; 

@@ -281,6 +281,47 @@ const getOrCreateGoogleUser = async (profile) => {
     return user;
 };
 
+// Get all favorites for a user
+const getFavorites = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch favorites' });
+    }
+};
+
+// Add a favorite destination for a user
+const addFavorite = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        const { destinationId } = req.body;
+        if (!user.favorites.includes(destinationId)) {
+            user.favorites.push(destinationId);
+            await user.save();
+        }
+        res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add favorite' });
+    }
+};
+
+// Remove a favorite destination for a user
+const removeFavorite = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        const { destinationId } = req.params;
+        user.favorites = user.favorites.filter(fav => fav !== destinationId);
+        await user.save();
+        res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to remove favorite' });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
@@ -294,4 +335,7 @@ module.exports = {
     deleteGalleryImage,
     getGalleryImage,
     getOrCreateGoogleUser,
+    getFavorites,
+    addFavorite,
+    removeFavorite,
 };

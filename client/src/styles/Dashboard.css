@@ -857,4 +857,132 @@ input[type="date"]::-webkit-clear-button {
 .delete-photo-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* --- Dashboard Favorites Horizontal Card Styles --- */
+.dashboard-fav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 36px;
+}
+.dashboard-fav-card {
+    display: flex;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 6px 24px rgba(53,122,189,0.13);
+    overflow: hidden;
+    min-height: 220px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    align-items: stretch;
+}
+.dashboard-fav-card:hover {
+    box-shadow: 0 16px 40px rgba(53,122,189,0.18);
+    transform: translateY(-6px) scale(1.03);
+}
+.dashboard-fav-image-wrapper {
+    flex: 0 0 420px;
+    height: 280px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e3eaf3;
+}
+.dashboard-fav-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 22px;
+    border-bottom-left-radius: 22px;
+}
+.dashboard-fav-info {
+    flex: 1;
+    padding: 28px 28px 22px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+}
+.dashboard-fav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.dashboard-fav-remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.7rem;
+    color: #ff2222;
+    transition: color 0.2s, transform 0.15s;
+    margin-left: 10px;
+}
+.dashboard-fav-remove-btn:hover {
+    color: #b91c1c;
+    transform: scale(1.1);
+}
+.dashboard-fav-rating {
+    font-size: 1.1rem;
+    color: #ffb400;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.dashboard-fav-genre {
+    background: #e3eaf3;
+    color: #357abd;
+    border-radius: 12px;
+    padding: 2px 12px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin-left: 12px;
+}
+.dashboard-fav-desc {
+    color: #444;
+    font-size: 1.08rem;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+.dashboard-fav-details {
+    display: flex;
+    gap: 24px;
+    font-size: 1.01rem;
+    color: #357abd;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+@media (max-width: 900px) {
+    .dashboard-fav-card {
+        flex-direction: column;
+        min-height: unset;
+    }
+    .dashboard-fav-image-wrapper {
+        flex: unset;
+        width: 100%;
+        height: 200px;
+    }
+    .dashboard-fav-image {
+        border-radius: 22px 22px 0 0;
+    }
+    .dashboard-fav-info {
+        padding: 18px 14px 14px 14px;
+    }
+}
+/* --- End Dashboard Favorites Horizontal Card Styles --- */
+
+.dashboard-fav-remove-hint {
+    display: block;
+    font-size: 0.97rem;
+    color: #b91c1c;
+    opacity: 0.7;
+    margin-top: 2px;
+    margin-bottom: 8px;
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right;
+    font-style: italic;
 } 
