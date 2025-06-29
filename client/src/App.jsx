@@ -14,6 +14,8 @@ import About from './components/About';
 import Contact from './components/Contact';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
+import Preloader from './components/Preloader';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 // Protected Route wrapper component
@@ -27,6 +29,12 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  // Remove backend request logic from here
+
+  if (loading) return <Preloader onReady={() => setLoading(false)} />;
+
   return (
     <ErrorBoundary>
       <AuthProvider>

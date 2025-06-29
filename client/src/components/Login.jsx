@@ -109,7 +109,10 @@ function Login() {
             });
             if (res.data.token && res.data.user) {
                 await login(res.data); // Store JWT and user info
-                navigate('/dashboard'); // Redirect to dashboard
+                setMessage('✅ Login successful! Welcome back.');
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 1500);
             } else {
                 setMessage('Google login failed: No token returned');
             }
@@ -192,8 +195,18 @@ function Login() {
                             'Log In'
                         )}
                     </Button>
+                    {/* OR separator */}
+                    <div className="or-separator">
+                      <span>or</span>
+                    </div>
                 </Form>
 
+                <div className="google-login-btn">
+                  <GoogleLogin
+                      onSuccess={handleGoogleLoginSuccess}
+                      onError={() => { /* handle error */ }}
+                  />
+                </div>
                 <div className="signup-link">
                     Don't have an account?{' '}
                     <a href="/signup" onClick={(e) => {
@@ -203,11 +216,6 @@ function Login() {
                         Sign up here
                     </a>
                 </div>
-
-                <GoogleLogin
-                    onSuccess={handleGoogleLoginSuccess}
-                    onError={() => { /* handle error */ }}
-                />
             </div>
         </div>
     );
