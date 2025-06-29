@@ -188,16 +188,20 @@ function Signup() {
                     >
                         {isLoading ? 'Creating Account...' : 'Create Account'}
                     </Button>
-
-                    <div className="signup-footer">
-                        <p>Already have an account? <a href="/login">Log in</a></p>
+                    <div className="or-separator">
+                      <span>or</span>
                     </div>
                 </Form>
 
-                <GoogleLogin
-                    onSuccess={handleGoogleSignupSuccess}
-                    onError={() => { /* handle error */ }}
-                />
+                <div className="google-login-btn">
+                  <GoogleLogin
+                      onSuccess={handleGoogleSignupSuccess}
+                      onError={() => { /* handle error */ }}
+                  />
+                </div>
+                <div className="signup-footer">
+                    <p>Already have an account? <a href="/login" onClick={e => { e.preventDefault(); navigate('/login'); }}>Log in</a></p>
+                </div>
             </div>
         </div>
     );
